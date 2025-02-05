@@ -1,4 +1,5 @@
 import { DataSource } from "typeorm";
+import { BatasKecamatan } from "./entity/batasKelurahan";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -9,7 +10,7 @@ export const AppDataSource = new DataSource({
   database: "gismura",
   synchronize: true,
   logging: true,
-  entities: [],
+  entities: [BatasKecamatan],
   subscribers: [],
   migrations: [],
 });

@@ -229,6 +229,8 @@
 import { Request, Response } from "express";
 import { open } from "shapefile";
 import proj4 from "proj4";
+import { AppDataSource } from "@/data-resource";
+import { BatasKecamatan } from "@/entity/batasKelurahan";
 
 // Definisi proyeksi UTM Zona 50S (EPSG:32750) dan WGS84 (EPSG:4326)
 const utm50s = "+proj=utm +zone=50 +south +datum=WGS84 +units=m +no_defs";
@@ -237,8 +239,12 @@ const wgs84 = "+proj=longlat +datum=WGS84 +no_defs";
 export const shpkelurahan = async (req: Request, res: Response) => {
   try {
     // Path ke file shapefile
-    const filePath =
-      "D:/PT SIER (UI)/template/api/public/ADM_murung_040924.shp";
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const filePath = req.file.path;
+    const source = await open(filePath);
 
     // Buka file shapefile
     const source = await open(filePath);
@@ -283,23 +289,62 @@ export const shpkelurahan = async (req: Request, res: Response) => {
             continue; // Skip jika tipe geometri tidak didukung
         }
 
-        // Format fitur GeoJSON
-        const geojsonFeature = {
-          type: "Feature",
-          properties: {
+        // Simpan ke database PostgreSQL dengan TypeORM
+        const kelurahanRepo = AppDataSource.getRepository(BatasKecamatan);
+
+        // Cek apakah tabel sudah memiliki data
+        const existingDataCount = await kelurahanRepo.count();
+        if (existingDataCount > 0) {
+          await kelurahanRepo
+            .createQueryBuilder()
+            .delete()
+            .from(BatasKecamatan)
+            .execute();
+        }
+        await kelurahanRepo
+          .createQueryBuilder()
+          .insert()
+          .into(BatasKecamatan)
+          .values({
             KD_PROV: properties?.KD_PROV,
             KD_KAB: properties?.KD_KAB,
             KD_KEC: properties?.KD_KEC,
             KD_KEL: properties?.KD_KEL,
             NM_KEL: properties?.NM_KEL,
-          },
-          geometry: {
-            type: geometry.type,
-            coordinates: convertedCoordinates,
-          },
-        };
+          })
+          .execute();
 
-        geojsonFeatures.push(geojsonFeature);
+        // Setelah insert, update kolom geom dengan ST_GeomFromGeoJSON
+        await kelurahanRepo
+          .createQueryBuilder()
+          .update(BatasKecamatan)
+          .set({
+            geom: () =>
+              `ST_GeomFromGeoJSON('${JSON.stringify({
+                type: geometry.type,
+                coordinates: convertedCoordinates,
+              })}')`,
+          })
+          .where("kd_kel = :kd_kel", { kd_kel: properties?.KD_KEL }) // Pastikan identifier yang unik
+          .execute();
+
+        // Format fitur GeoJSON
+        // const geojsonFeature = {
+        //   type: "Feature",
+        //   properties: {
+        //     KD_PROV: properties?.KD_PROV,
+        //     KD_KAB: properties?.KD_KAB,
+        //     KD_KEC: properties?.KD_KEC,
+        //     KD_KEL: properties?.KD_KEL,
+        //     NM_KEL: properties?.NM_KEL,
+        //   },
+        //   geometry: {
+        //     type: geometry.type,
+        //     coordinates: convertedCoordinates,
+        //   },
+        // };
+
+        // geojsonFeatures.push(geojsonFeature);
 
         // Simpan ke database PostgreSQL dengan PostGIS
       }
