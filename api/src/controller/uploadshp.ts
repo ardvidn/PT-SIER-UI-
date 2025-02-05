@@ -244,7 +244,6 @@ export const shpkelurahan = async (req: Request, res: Response) => {
     }
 
     const filePath = req.file.path;
-    const source = await open(filePath);
 
     // Buka file shapefile
     const source = await open(filePath);
@@ -271,17 +270,11 @@ export const shpkelurahan = async (req: Request, res: Response) => {
             break;
 
           case "Polygon":
-            convertedCoordinates = geometry.coordinates.map((ring: any) =>
-              ring.map((point: any) => proj4(utm50s, wgs84, point))
-            );
+            convertedCoordinates = geometry.coordinates.map((ring: any) => ring.map((point: any) => proj4(utm50s, wgs84, point)));
             break;
 
           case "MultiPolygon":
-            convertedCoordinates = geometry.coordinates.map((polygon: any) =>
-              polygon.map((ring: any) =>
-                ring.map((point: any) => proj4(utm50s, wgs84, point))
-              )
-            );
+            convertedCoordinates = geometry.coordinates.map((polygon: any) => polygon.map((ring: any) => ring.map((point: any) => proj4(utm50s, wgs84, point))));
             break;
 
           default:
@@ -295,11 +288,7 @@ export const shpkelurahan = async (req: Request, res: Response) => {
         // Cek apakah tabel sudah memiliki data
         const existingDataCount = await kelurahanRepo.count();
         if (existingDataCount > 0) {
-          await kelurahanRepo
-            .createQueryBuilder()
-            .delete()
-            .from(BatasKecamatan)
-            .execute();
+          await kelurahanRepo.createQueryBuilder().delete().from(BatasKecamatan).execute();
         }
         await kelurahanRepo
           .createQueryBuilder()
@@ -353,8 +342,7 @@ export const shpkelurahan = async (req: Request, res: Response) => {
     return res.status(200).json({
       code: 200,
       data: geojsonFeatures, // Data GeoJSON sesuai format
-      message:
-        "File SHP berhasil dikonversi dan disimpan ke database dengan proyeksi WGS84",
+      message: "File SHP berhasil dikonversi dan disimpan ke database dengan proyeksi WGS84",
     });
   } catch (error) {
     console.error("Error membaca file SHP atau menyimpan ke database:", error); // Log error untuk debug
