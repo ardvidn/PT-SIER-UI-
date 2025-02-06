@@ -5,8 +5,13 @@ export class BatasKecamatan {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ type: "geometry", spatialFeatureType: "Polygon", srid: 4326 })
-  geom!: string;
+  @Column({
+    type: "geometry",
+    spatialFeatureType: "Polygon",
+    srid: 4326,
+    nullable: true,
+  })
+  geom!: string | null;
 
   @Column()
   KD_PROV!: string;

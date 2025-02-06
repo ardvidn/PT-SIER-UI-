@@ -4,7 +4,7 @@ const UploadKelurahan = () => {
   return (
     <UploadButton
       label="Batas Kelurahan"
-      endpoint="http://localhost:8070/api/convert/bataskelurahan"
+      endpoint="http://localhost:8080/api/convert/bataskelurahan"
     />
   );
 };
