@@ -214,7 +214,7 @@ import { BatasKecamatan } from "@/entity/batasKelurahan";
 const utm50s = "+proj=utm +zone=50 +south +datum=WGS84 +units=m +no_defs";
 const wgs84 = "+proj=longlat +datum=WGS84 +no_defs";
 
-export const shpkelurahan = async (req: Request, res: Response) => {
+export const PostShpKelurahan = async (req: Request, res: Response) => {
   try {
     // Path ke file SHP di server
     const filePath =

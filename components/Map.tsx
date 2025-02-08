@@ -14,6 +14,7 @@ import L from "leaflet";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import UploadMain from "./UploadMain";
+import Navbar from "./Navbar";
 
 const icon = L.icon({ iconUrl: "/images/marker-icon.png" });
 
@@ -110,7 +111,7 @@ const Maps = () => {
           //   zIndex: 1000, // Pastikan zIndex lebih tinggi dari peta
           // }}
         >
-          <UploadMain />
+          {/* <UploadMain /> */}
         </div>
       </div>
     </>
