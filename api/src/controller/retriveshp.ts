@@ -6,6 +6,15 @@ export const getBatasKecamatan = async (req: Request, res: Response) => {
   try {
     const kelurahanRepo = AppDataSource.getRepository(BatasKecamatan);
 
+    // Cek apakah ada data di dalam tabel
+    const count = await kelurahanRepo.count();
+    if (count === 0) {
+      return res.status(404).json({
+        code: 404,
+        message: "Data tidak tersedia",
+      });
+    }
+
     // Ambil semua data dari tabel batas_kecamatan
     const batasData = await kelurahanRepo
       .createQueryBuilder("batas")
@@ -36,7 +45,7 @@ export const getBatasKecamatan = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       code: 200,
-      data: geojson,
+      data: geojson.data,
       message: "Data batas kecamatan berhasil diambil",
     });
   } catch (error) {
