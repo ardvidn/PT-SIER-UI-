@@ -222,99 +222,93 @@ export const PostShpKelurahan = async (req: Request, res: Response) => {
     // Buka file SHP
     const source = await open(filePath);
 
-    // // Repository database
-    // const kelurahanRepo = AppDataSource.getRepository(BatasKecamatan);
+    // Repository database
+    const kelurahanRepo = AppDataSource.getRepository(BatasKecamatan);
 
-    // // Hapus data lama jika sudah ada
-    // await kelurahanRepo.clear();
+    // Hapus data lama jika sudah ada
+    await kelurahanRepo.clear();
 
-    // // Simpan GeoJSON ke dalam array
-    // const geojsonFeatures: any[] = [];
+    // Simpan GeoJSON ke dalam array
+    const geojsonFeatures: any[] = [];
 
-    // let result;
-    // do {
-    //   result = await source.read();
-    //   if (!result.done) {
-    //     const { properties, geometry } = result.value;
-    //     if (!geometry) continue;
+    let result;
+    do {
+      result = await source.read();
+      if (!result.done) {
+        const { properties, geometry } = result.value;
+        if (!geometry) continue;
 
-    //     let convertedCoordinates;
+        let convertedCoordinates;
 
-    //     // Konversi koordinat ke WGS84 (EPSG:4326)
-    //     switch (geometry.type) {
-    //       case "Point":
-    //         convertedCoordinates = proj4(utm50s, wgs84, geometry.coordinates);
-    //         break;
+        // Konversi koordinat ke WGS84 (EPSG:4326)
+        switch (geometry.type) {
+          case "Point":
+            convertedCoordinates = proj4(utm50s, wgs84, geometry.coordinates);
+            break;
 
-    //       case "Polygon":
-    //         convertedCoordinates = geometry.coordinates.map((ring: any) =>
-    //           ring.map((point: any) => proj4(utm50s, wgs84, point))
-    //         );
-    //         break;
+          case "Polygon":
+            convertedCoordinates = geometry.coordinates.map((ring: any) => ring.map((point: any) => proj4(utm50s, wgs84, point)));
+            break;
 
-    //       case "MultiPolygon":
-    //         convertedCoordinates = geometry.coordinates.map((polygon: any) =>
-    //           polygon.map((ring: any) =>
-    //             ring.map((point: any) => proj4(utm50s, wgs84, point))
-    //           )
-    //         );
-    //         break;
+          case "MultiPolygon":
+            convertedCoordinates = geometry.coordinates.map((polygon: any) => polygon.map((ring: any) => ring.map((point: any) => proj4(utm50s, wgs84, point))));
+            break;
 
-    //       default:
-    //         console.warn(`Geometry type ${geometry.type} is not supported`);
-    //         continue;
-    //     }
+          default:
+            console.warn(`Geometry type ${geometry.type} is not supported`);
+            continue;
+        }
 
-    //     // Validasi apakah geometri sudah dikonversi
-    //     if (!convertedCoordinates || convertedCoordinates.length === 0) {
-    //       console.warn(`Geometri tidak valid untuk ${properties?.NM_KEL}`);
-    //       continue;
-    //     }
+        // Validasi apakah geometri sudah dikonversi
+        if (!convertedCoordinates || convertedCoordinates.length === 0) {
+          console.warn(`Geometri tidak valid untuk ${properties?.NM_KEL}`);
+          continue;
+        }
 
-    //     // Format GeoJSON untuk database
-    //     const geoJsonData = {
-    //       type: geometry.type,
-    //       coordinates: convertedCoordinates,
-    //     };
+        // Format GeoJSON untuk database
+        const geoJsonData = {
+          type: geometry.type,
+          coordinates: convertedCoordinates,
+        };
 
-    //     // Tambahkan ke array GeoJSON
-    //     geojsonFeatures.push({
-    //       type: "Feature",
-    //       properties: {
-    //         KD_PROV: properties?.KD_PROV,
-    //         KD_KAB: properties?.KD_KAB,
-    //         KD_KEC: properties?.KD_KEC,
-    //         KD_KEL: properties?.KD_KEL,
-    //         NM_KEL: properties?.NM_KEL,
-    //       },
-    //       geometry: geoJsonData,
-    //     });
+        // Tambahkan ke array GeoJSON
+        geojsonFeatures.push({
+          type: "Feature",
+          properties: {
+            KD_PROV: properties?.KD_PROV,
+            KD_KAB: properties?.KD_KAB,
+            KD_KEC: properties?.KD_KEC,
+            KD_KEL: properties?.KD_KEL,
+            NM_KEL: properties?.NM_KEL,
+          },
+          geometry: geoJsonData,
+        });
 
-    //     // Simpan ke database
-    //     await kelurahanRepo
-    //       .createQueryBuilder()
-    //       .insert()
-    //       .into(BatasKecamatan)
-    //       .values({
-    //         KD_PROV: properties?.KD_PROV,
-    //         KD_KAB: properties?.KD_KAB,
-    //         KD_KEC: properties?.KD_KEC,
-    //         KD_KEL: properties?.KD_KEL,
-    //         NM_KEL: properties?.NM_KEL,
-    //       })
-    //       .execute();
+        // Simpan ke database
+        await kelurahanRepo
+          .createQueryBuilder()
+          .insert()
+          .into(BatasKecamatan)
+          .values({
+            KD_PROV: properties?.KD_PROV,
+            KD_KAB: properties?.KD_KAB,
+            KD_KEC: properties?.KD_KEC,
+            KD_KEL: properties?.KD_KEL,
+            NM_KEL: properties?.NM_KEL,
+          })
+          .execute();
 
-    //     // Update kolom geom dengan ST_GeomFromGeoJSON
-    //     await kelurahanRepo
-    //       .createQueryBuilder()
-    //       .update(BatasKecamatan)
-    //       .set({
-    //         geom: () => `ST_GeomFromGeoJSON('${JSON.stringify(geoJsonData)}')`,
-    //       })
-    //       .where("KD_KEL = :KD_KEL", { KD_KEL: properties?.KD_KEL })
-    //       .execute();
-    //   }
-    // } while (!result.done);
+        // Update kolom geom dengan ST_GeomFromGeoJSON
+        await kelurahanRepo
+          .createQueryBuilder()
+          .update(BatasKecamatan)
+          .set({
+            geom: () => `ST_GeomFromGeoJSON('${JSON.stringify(geoJsonData)}')`,
+          })
+          .where("KD_KEL = :KD_KEL", { KD_KEL: properties?.KD_KEL })
+          .execute();
+      }
+    } while (!result.done);
 
     return res.status(200).json({
       code: 200,

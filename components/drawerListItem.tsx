@@ -1,12 +1,12 @@
-import { ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import { ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import React from "react";
 
-const ListItem = ({ title, useIcon }: any) => {
+const DrawerListItem = ({ title, useIcon }: any) => {
   return (
     <>
       <ListItem key={title} disablePadding>
         <ListItemButton>
-          <ListItemIcon></ListItemIcon>
+          <ListItemIcon>{useIcon}</ListItemIcon>
           <ListItemText primary={title} />
         </ListItemButton>
       </ListItem>
@@ -14,4 +14,4 @@ const ListItem = ({ title, useIcon }: any) => {
   );
 };
 
-export default ListItem;
+export default DrawerListItem;
