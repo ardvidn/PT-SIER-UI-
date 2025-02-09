@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { TextField, IconButton, Button, Modal, Box } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import MenuIcon from "@mui/icons-material/Menu";
+
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import DrawerList from "./drawerList";
 
 const mockData = {
   "74.08.060.012.001.0039.0": {
@@ -35,8 +36,14 @@ const Navbar = () => {
       .replace(/^(\d{2})\.(\d{2})(\d{0,3})/, "$1.$2.$3") // 2 digit + titik + 2 digit + titik + 3 digit
       .replace(/^(\d{2})\.(\d{2})\.(\d{3})(\d{0,3})/, "$1.$2.$3.$4") // tambah 3 digit + titik + 3 digit
       .replace(/^(\d{2})\.(\d{2})\.(\d{3})\.(\d{3})(\d{0,3})/, "$1.$2.$3.$4.$5") // tambah 3 digit + titik + 3 digit
-      .replace(/^(\d{2})\.(\d{2})\.(\d{3})\.(\d{3})\.(\d{3})(\d{0,4})/, "$1.$2.$3.$4.$5.$6") // tambah 4 digit + titik + 1 digit
-      .replace(/^(\d{2})\.(\d{2})\.(\d{3})\.(\d{3})\.(\d{3})\.(\d{4})(\d{0,1})/, "$1.$2.$3.$4.$5.$6.$7"); // tambah 1 digit terakhir
+      .replace(
+        /^(\d{2})\.(\d{2})\.(\d{3})\.(\d{3})\.(\d{3})(\d{0,4})/,
+        "$1.$2.$3.$4.$5.$6"
+      ) // tambah 4 digit + titik + 1 digit
+      .replace(
+        /^(\d{2})\.(\d{2})\.(\d{3})\.(\d{3})\.(\d{3})\.(\d{4})(\d{0,1})/,
+        "$1.$2.$3.$4.$5.$6.$7"
+      ); // tambah 1 digit terakhir
 
     return formatted;
   };
@@ -67,7 +74,7 @@ const Navbar = () => {
   return (
     <div className="p-4 bg-white shadow-md rounded-md max-w-md mx-auto absolute top-4 left-4 z-[1000]">
       <div className="flex items-center space-x-2 border p-2 rounded-md">
-        <MenuIcon />
+        <DrawerList />
         <TextField
           fullWidth
           variant="standard"
@@ -81,7 +88,11 @@ const Navbar = () => {
         </IconButton>
       </div>
 
-      <Button fullWidth endIcon={showMore ? <ExpandLessIcon /> : <ExpandMoreIcon />} onClick={() => setShowMore(!showMore)}>
+      <Button
+        fullWidth
+        endIcon={showMore ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        onClick={() => setShowMore(!showMore)}
+      >
         {showMore ? "Show Less" : "Show More"}
       </Button>
 
@@ -110,7 +121,11 @@ const Navbar = () => {
               <p>Kelurahan: {propertyData.kelurahan}</p>
             </div>
           )}
-          <Button fullWidth onClick={() => setOpenModal(false)} className="mt-4">
+          <Button
+            fullWidth
+            onClick={() => setOpenModal(false)}
+            className="mt-4"
+          >
             Close
           </Button>
         </Box>

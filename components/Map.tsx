@@ -1,5 +1,14 @@
 "use client";
-import { MapContainer, TileLayer, Marker, Popup, LayersControl, LayerGroup, GeoJSON, ZoomControl } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  LayersControl,
+  LayerGroup,
+  GeoJSON,
+  ZoomControl,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import point from "../testdata/contohtitik";
 import L from "leaflet";
@@ -7,6 +16,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import UploadMain from "./UploadMain";
 import Navbar from "./Navbar";
+import PersistentDrawerLeft from "./drawerList";
 
 const icon = L.icon({ iconUrl: "/images/marker-icon.png" });
 
@@ -19,7 +29,9 @@ const Maps = () => {
     // Fetch data dari API
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8070/api/convert/bataskelurahan");
+        const response = await axios.get(
+          "http://localhost:8070/api/convert/bataskelurahan"
+        );
         setGeoJsonData(response.data.data); // Simpan data GeoJSON ke state
       } catch (error) {
         console.error("Error fetching GeoJSON data:", error);
@@ -47,7 +59,6 @@ const Maps = () => {
           zoomControl={false}
         >
           <Navbar />
-          {/* <SearchBar /> */}
           {/* <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             // url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -56,24 +67,39 @@ const Maps = () => {
 
           <LayersControl>
             <LayersControl.BaseLayer name="Open Street Map">
-              <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
             </LayersControl.BaseLayer>
 
             <LayersControl.BaseLayer checked name="Google Map">
-              <TileLayer attribution="Google Maps" url="https://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}" />
+              <TileLayer
+                attribution="Google Maps"
+                url="https://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}"
+              />
             </LayersControl.BaseLayer>
 
             <LayersControl.BaseLayer name="Google Map Satellite">
               <LayerGroup>
-                <TileLayer attribution="Google Maps Satellite" url="https://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}" />
+                <TileLayer
+                  attribution="Google Maps Satellite"
+                  url="https://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}"
+                />
                 <TileLayer url="https://www.google.cn/maps/vt?lyrs=y@189&gl=cn&x={x}&y={y}&z={z}" />
               </LayerGroup>
             </LayersControl.BaseLayer>
           </LayersControl>
           <ZoomControl position="topright" />
-          {geoJsonData && <GeoJSON data={geoJsonData} onEachFeature={onEachFeatureKec} />}
+          {geoJsonData && (
+            <GeoJSON data={geoJsonData} onEachFeature={onEachFeatureKec} />
+          )}
           {test.map((item, index) => (
-            <Marker key={index} position={[item.LATTITUDE, item.LONGITUDE]} icon={icon}>
+            <Marker
+              key={index}
+              position={[item.LATTITUDE, item.LONGITUDE]}
+              icon={icon}
+            >
               <Popup>
                 A pretty CSS3 popup. <br /> Easily Customizable. {item.judul}
               </Popup>
