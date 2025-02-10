@@ -1,5 +1,11 @@
-import { ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import {
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
 import React from "react";
+import BasicModal from "./BasicModal";
 
 const DrawerListItem = ({ title, useIcon }: any) => {
   return (
