@@ -1,16 +1,4 @@
-import {
-  Box,
-  Divider,
-  Drawer,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  ListSubheader,
-  useTheme,
-} from "@mui/material";
+import { Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, ListSubheader, useTheme } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import React, { useState } from "react";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
@@ -22,7 +10,6 @@ import DrawerListItem from "./drawerListItem";
 
 const DrawerList = () => {
   const [open, setOpen] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
   const theme = useTheme();
 
   const handleDrawerOpen = () => {
@@ -33,60 +20,20 @@ const DrawerList = () => {
     setOpen(false);
   };
 
-  const handdleModalOpen = () => {
-    setOpenModal(true);
-  };
-  const handdleModalClose = () => {
-    setOpenModal(false);
-  };
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation">
       <List>
-        <IconButton onClick={handleDrawerClose}>
-          {theme.direction === "ltr" ? (
-            <ChevronLeftIcon />
-          ) : (
-            <ChevronRightIcon />
-          )}
-        </IconButton>
+        <IconButton onClick={handleDrawerClose}>{theme.direction === "ltr" ? <ChevronLeftIcon /> : <ChevronRightIcon />}</IconButton>
       </List>
       <Divider />
       <List>
         <ListSubheader>Upload Batas Administrasi</ListSubheader>
-        <DrawerListItem
-          title="Batas Kelurahan"
-          useIcon={<UploadIcon />}
-          identifier="kecamatan"
-        />
-        <DrawerListItem
-          title="Batas Blok"
-          useIcon={<UploadIcon />}
-          identifier="kelurahan"
-        />
-        <DrawerListItem
-          title="Batas Persil"
-          useIcon={<UploadIcon />}
-          identifier="kelurahan"
-        />
-        <DrawerListItem
-          title="Batas ZNT"
-          useIcon={<UploadIcon />}
-          identifier="kelurahan"
-        />
+        <DrawerListItem title="kelurahan" useIcon={<UploadIcon />} identifier="kelurahan" />
+        <DrawerListItem title="blok" useIcon={<UploadIcon />} identifier="blok" />
+        <DrawerListItem title="persil" useIcon={<UploadIcon />} identifier="persil" />
+        <DrawerListItem title="ZNT" useIcon={<UploadIcon />} identifier="ZNT" />
       </List>
       <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
     </Box>
   );
   return (

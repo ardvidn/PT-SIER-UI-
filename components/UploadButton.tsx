@@ -109,11 +109,7 @@ const UploadButton: React.FC<UploadButtonProps> = ({ label, endpoint }) => {
       }
     } catch (error: any) {
       console.error("Error uploading files:", error);
-      alert(
-        `Terjadi kesalahan saat mengunggah ${label}: ${
-          error.response?.data?.message || error.message
-        }`
-      );
+      alert(`Terjadi kesalahan saat mengunggah ${label}: ${error.response?.data?.message || error.message}`);
     }
   };
 
@@ -130,12 +126,7 @@ const UploadButton: React.FC<UploadButtonProps> = ({ label, endpoint }) => {
         onClick={handleUpload}
         className="rounded-lg px-4 py-2 text-white hover:opacity-80 transition"
         style={{
-          backgroundColor:
-            label === "Batas Kelurahan"
-              ? "blue"
-              : label === "Batas Blok"
-              ? "green"
-              : "red",
+          backgroundColor: "green",
         }}
       >
         Upload {label}
