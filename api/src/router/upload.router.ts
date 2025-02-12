@@ -1,5 +1,5 @@
 import { PostShpKelurahan } from "@/controller/uploadshp";
-import { checkFiles, uploadMiddleware } from "@/middleware/uploadMidlleware";
+import { uploadMiddleware } from "@/middleware/uploadMidlleware";
 import { Router } from "express";
 
 const uploadRouter = Router();

@@ -81,13 +81,7 @@ interface UploadButtonProps {
   kelurahan?: string | null;
 }
 
-const UploadButton: React.FC<UploadButtonProps> = ({
-  label,
-  endpoint,
-  jenis,
-  kecamatan,
-  kelurahan,
-}) => {
+const UploadButton: React.FC<UploadButtonProps> = ({ label, endpoint, jenis, kecamatan, kelurahan }) => {
   const [files, setFiles] = useState<File[]>([]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,7 +102,6 @@ const UploadButton: React.FC<UploadButtonProps> = ({
 
     const formData = new FormData();
     files.forEach((file) => formData.append("files", file));
-
     formData.append("kecamatan", kecamatan);
     formData.append("jenis", jenis);
 
@@ -132,11 +125,7 @@ const UploadButton: React.FC<UploadButtonProps> = ({
       }
     } catch (error: any) {
       console.error("Error uploading files:", error);
-      alert(
-        `Terjadi kesalahan saat mengunggah ${label}: ${
-          error.response?.data?.message || error.message
-        }`
-      );
+      alert(`Terjadi kesalahan saat mengunggah ${label}: ${error.response?.data?.message || error.message}`);
     }
   };
 

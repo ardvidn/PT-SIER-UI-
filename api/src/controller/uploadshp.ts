@@ -216,8 +216,9 @@ const wgs84 = "+proj=longlat +datum=WGS84 +no_defs";
 
 export const PostShpKelurahan = async (req: Request, res: Response) => {
   try {
+    const { kecamatan, kelurahan, jenis } = req.body;
     // Path ke file SHP di server
-    const filePath = "D:/PT SIER (UI)/template/api/public/ADM_murung_040924.shp";
+    const filePath = `../../public/${kecamatan}_${kelurahan || "XX"}_${jenis}.shp`;
 
     // Buka file SHP
     const source = await open(filePath);

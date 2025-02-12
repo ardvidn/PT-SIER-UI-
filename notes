@@ -1,0 +1,7 @@
+
+
+upload -> if else condition 
+
+1. kalo public ada isi dengan nama file yang acak2an, diapus dan rename file upload sesuai format
+2. kalo public ada isi dengan nama file yang sesuai format kita, diapus dan rename file upload sesuai format
+3. kalo public kosong, langsung rename file upload sesuai format
