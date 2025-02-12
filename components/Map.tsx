@@ -30,7 +30,7 @@ const Maps = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8070/api/convert/bataskelurahan"
+          "http://localhost:8080/api/retrieve/bataskelurahan"
         );
         setGeoJsonData(response.data.data); // Simpan data GeoJSON ke state
       } catch (error) {
